@@ -24,18 +24,35 @@ Session = sessionmaker(bind=engine)
 
 
 class Base(DeclarativeBase):
-    """Classe de base commune à tous vos modèles."""
+    """Classe de base commune à tous les modèles."""
 
 
-# --- Vos modèles : À ÉCRIRE -----------------------------------------------
-# Une table = une classe, une colonne = un attribut. Squelette type :
-#
-#   class Truc(Base):
-#       __tablename__ = "trucs"
-#       id: Mapped[int] = mapped_column(primary_key=True)
-#       nom: Mapped[str]
-#
-# Définissez ici les tables de VOTRE domaine (comptes, objets, scores...).
+# --- Modèles : Modération ---------------------------------------------
+
+class Signalement(Base):
+    """Table stockant les signalements faits par les joueurs."""
+    __tablename__ = "signalements"
+    id: Mapped[int] = mapped_column(primary_key=True)
+    pseudo_vise: Mapped[str] = mapped_column()
+    raison: Mapped[str] = mapped_column()
+
+class Banni(Base):
+    """Table stockant la liste des joueurs actuellement bannis."""
+    __tablename__ = "bannis"
+    # On utilise le pseudo comme clé primaire car un joueur ne peut être banni qu'une seule fois
+    pseudo: Mapped[str] = mapped_column(primary_key=True)
+    motif: Mapped[str] = mapped_column()
+    duree: Mapped[str] = mapped_column()
+
+class Action(Base):
+    """File d'actions exécutées en jeu par le mod"""
+    __tablename__ = "actions"
+    id: Mapped[int] = mapped_column(primary_key=True)
+    type: Mapped[str] = mapped_column()
+    cible: Mapped[str] = mapped_column()
+    
+    objet: Mapped[str] = mapped_column(nullable=True) 
+    statut: Mapped[str] = mapped_column(default="en_attente")
 
 
 def init():
