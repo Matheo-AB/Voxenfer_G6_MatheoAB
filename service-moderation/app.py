@@ -58,6 +58,24 @@ def lister_signalements():
         resultat = [{"id": sig.id, "pseudo_vise": sig.pseudo_vise, "raison": sig.raison} for sig in sigs]
         return jsonify(resultat), 200
 
+@app.route("/bannis", methods=["POST"])
+@require_role("moderateur")
+def bannir_joueur():
+    data = request.get_json() or {}
+    if "pseudo" not in data or "motif" not in data or "duree" not in data:
+        return jsonify({"erreur": "Champs pseudo, motif et duree obligatoires"}), 400
+    with db.Session() as s:
+        banni = s.query(db.Banni).filter_by(pseudo=data["pseudo"]).first()
+        if not banni:
+            banni = db.Banni(pseudo=data["pseudo"], motif=data["motif"], duree=data["duree"])
+            s.add(banni)
+        else:
+            banni.motif = data["motif"]
+            banni.duree = data["duree"]
+        s.commit()
+    return jsonify({"message": f"Joueur {data['pseudo']} banni"}), 201
+
+
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000)
