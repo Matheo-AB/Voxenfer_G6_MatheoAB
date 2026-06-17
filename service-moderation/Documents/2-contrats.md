@@ -118,6 +118,7 @@ Exemple : `POST /comptes/login` arrive en `POST /login` sur `service-comptes`.
 | POST | `/bannis` | moderateur | `{pseudo, motif, duree}` |
 | GET | `/bannis` | - | liste des bannis `[{pseudo}]` (réconciliation du mod) |
 | GET | `/bannis/<pseudo>` | - | `{pseudo, banni: true/false}` |
+| DELETE | `/bannis/<pseudo>` | moderateur | lève le ban d'un joueur |
 
 *À compléter par l'équipe : routes étoffées et détail des champs JSON.*
 
