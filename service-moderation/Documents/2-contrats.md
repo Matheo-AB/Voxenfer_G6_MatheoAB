@@ -114,10 +114,10 @@ Exemple : `POST /comptes/login` arrive en `POST /login` sur `service-comptes`.
 | Méthode | Route | Auth | Rôle |
 |--------:|:------|:-----|:-----|
 | POST | `/signalements` | jwt | `{pseudo_vise, raison}` |
-| GET | `/signalements` | moderateur | liste |
+| GET | `/signalements` | moderateur | liste `[{id, pseudo_vise, raison}]` |
 | POST | `/bannis` | moderateur | `{pseudo, motif, duree}` |
 | GET | `/bannis` | - | liste des bannis `[{pseudo}]` (réconciliation du mod) |
-| GET | `/bannis/<pseudo>` | - | `{pseudo, banni: true/false}` |
+| GET | `/bannis/<pseudo>` | - | `{pseudo, banni: true/false, motif, duree}` |
 | DELETE | `/bannis/<pseudo>` | moderateur | lève le ban d'un joueur |
 
 *À compléter par l'équipe : routes étoffées et détail des champs JSON.*
