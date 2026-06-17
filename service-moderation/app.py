@@ -27,7 +27,7 @@ def _compter():
 
 @app.route("/health")
 def health():
-    return jsonify({"status": "ok", "service": "VOTRE-NOM"})  # mettez votre nom
+    return jsonify({"status": "ok", "service": "moderation"})  # mettez votre nom
 
 
 @app.route("/metrics")
@@ -35,15 +35,29 @@ def metrics():
     return jsonify({"requetes_total": _metriques["requetes"]})
 
 
-# --- Votre domaine : À ÉCRIRE ---------------------------------------------
-# Ajoutez ici les routes de VOTRE service (cf. 2-contrats.md). Rappels :
-#   - lectures ouvertes, écritures protégées (@require_jwt / @require_role) ;
-#   - après require_jwt, l'identité de l'appelant est dans request.joueur
-#     (request.joueur["pseudo"], request.joueur["roles"]) ;
-#   - une session de base par requête : `with db.Session() as s: ...` ;
-#   - renvoyez du JSON et le bon code (201 créé, 400 mal formé, 404, 409...).
+
+
+@app.route("/signalements", methods=["POST"])
+@require_jwt
+def creer_signalement():
+    data = request.get_json() or {}
+    if "pseudo_vise" not in data or "raison" not in data:
+        return jsonify({"erreur": "Champs pseudo_vise et raison obligatoires"}), 400
+    with db.Session() as s:
+        sig = db.Signalement(pseudo_vise=data["pseudo_vise"], raison=data["raison"])
+        s.add(sig)
+        s.commit()
+    return jsonify({"message": "Signalement créé"}), 201
+
+
+@app.route("/signalements", methods=["GET"])
+@require_role("moderateur")
+def lister_signalements():
+    with db.Session() as s:
+        sigs = s.query(db.Signalement).all()
+        resultat = [{"id": sig.id, "pseudo_vise": sig.pseudo_vise, "raison": sig.raison} for sig in sigs]
+        return jsonify(resultat), 200
 
 
 if __name__ == "__main__":
-    # 0.0.0.0 : indispensable en conteneur. Port interne uniforme : 5000.
     app.run(host="0.0.0.0", port=5000)
