@@ -83,6 +83,14 @@ def lister_bannis():
         resultat = [{"pseudo": b.pseudo} for b in bannis]
         return jsonify(resultat), 200
 
+@app.route("/bannis/<pseudo>", methods=["GET"])
+def verifier_banni(pseudo):
+    with db.Session() as s:
+        banni = s.query(db.Banni).filter_by(pseudo=pseudo).first()
+        if banni:
+            return jsonify({"pseudo": pseudo, "banni": True, "motif": banni.motif, "duree": banni.duree}), 200
+        return jsonify({"pseudo": pseudo, "banni": False}), 200
+
 
 
 
