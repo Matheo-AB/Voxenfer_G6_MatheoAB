@@ -91,6 +91,16 @@ def verifier_banni(pseudo):
             return jsonify({"pseudo": pseudo, "banni": True, "motif": banni.motif, "duree": banni.duree}), 200
         return jsonify({"pseudo": pseudo, "banni": False}), 200
 
+@app.route("/bannis/<pseudo>", methods=["DELETE"])
+@require_role("moderateur")
+def lever_bannissement(pseudo):
+    with db.Session() as s:
+        banni = s.query(db.Banni).filter_by(pseudo=pseudo).first()
+        if not banni:
+            return jsonify({"erreur": "Joueur non banni"}), 404
+        s.delete(banni)
+        s.commit()
+    return jsonify({"message": f"Ban levé pour {pseudo}"}), 200
 
 
 
