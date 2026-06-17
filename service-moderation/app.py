@@ -76,6 +76,15 @@ def bannir_joueur():
     return jsonify({"message": f"Joueur {data['pseudo']} banni"}), 201
 
 
+@app.route("/bannis", methods=["GET"])
+def lister_bannis():
+    with db.Session() as s:
+        bannis = s.query(db.Banni).all()
+        resultat = [{"pseudo": b.pseudo} for b in bannis]
+        return jsonify(resultat), 200
+
+
+
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000)
