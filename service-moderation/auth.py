@@ -33,8 +33,6 @@ def require_jwt(f):
     """
     @wraps(f)
     def verifie(*args, **kwargs):
-        # lire l'en-tête Authorization, décoder le JWT (HS256, SECRET),
-        # renvoyer 401 si absent/invalide, sinon request.joueur = payload.
         auth_header = request.headers.get("Authorization")
         if not auth_header or not auth_header.startswith("Bearer "):
             return jsonify({"erreur": "Jeton manquant ou mal formaté"}), 401
@@ -59,8 +57,6 @@ def require_role(role):
         @wraps(f)
         @require_jwt
         def verifie(*args, **kwargs):
-            # vérifier le jeton (comme require_jwt), puis vérifier que
-            # `role` est dans request.joueur["roles"] (sinon 403).
             if role not in request.joueur.get("roles", []):
                 return jsonify({"erreur": f"Accès refusé, rôle '{role}' requis"}), 403
             return f(*args, **kwargs)
