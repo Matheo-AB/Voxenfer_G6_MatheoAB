@@ -76,14 +76,14 @@ curl -X GET http://localhost:8080/moderation/bannis
 ```text
 service-moderation/
 └───── app.py
-   ├── auth.py
-   ├── db.py
-   ├── Dockerfile
-   └── requierements.txt
+  ├── auth.py
+  ├── db.py
+  ├── Dockerfile
+  └── requierements.txt
+  Documents/
+  └───── 1-sujet.md
+    ├── 2-contrats.md
+    ├── group.md
+    └── README.md
 
-Documents/
-└───── 1-sujet.md
-   ├── 2-contrats.md
-   ├── group.md
-   └── README.md
 ```
