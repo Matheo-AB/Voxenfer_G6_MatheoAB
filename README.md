@@ -23,6 +23,11 @@ Le service **G6 - Modération** gère la sécurité et la discipline sur le serv
 
 Ce service possède sa propre base de données SQLite gérée via l'ORM SQLAlchemy et vérifie les jetons JWT émis par le service-comptes.
 
+
+### Fonction supplémentaire
+
+- Possibilité de lever un bannissement sur un joueur banni.
+
 ---
 ## Comment lancer le service
 
@@ -47,15 +52,16 @@ Ce service possède sa propre base de données SQLite gérée via l'ORM SQLAlche
 ### 1. Créer un signalement pour un **joueur**.
 ```bash
 curl -X POST http://localhost:8080/moderation/signalements \
-  -H "Authorization: Bearer [...]" \
+  -H "Authorization: Bearer jwt_token" \
   -H "Content-Type: application/json" \
   -d '{"pseudo": "CanardGraffeur", "raison": "Dégradation"}'
 ```
 
 ### 2. Effectuer un bannissement pour un **joueur**.
 ```bash
-curl -X POST http://localhost:8080/moderation/bannis pseudo motif duree \
-  -H "Authorization: Bearer [...]" \
+curl -X POST http://localhost:8080/moderation/bannis pseudo motif duree \ 
+  -H "Authorization: Bearer jwt_token" \
+  -H "require_role: moderateur"
   -H "Content-Type: application/json" \
   -d '{"pseudo": "CanardVoleur", "motif": "Vol Avéré", "duree": 3j}'
 ```
